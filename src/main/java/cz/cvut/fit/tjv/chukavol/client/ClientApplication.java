@@ -15,6 +15,8 @@ import org.springframework.hateoas.config.HypermediaRestTemplateConfigurer;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
+
 @SpringBootApplication
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ClientApplication implements ApplicationRunner {
@@ -45,6 +47,17 @@ public class ClientApplication implements ApplicationRunner {
                 int id = Integer.parseInt(args.getOptionValues("id").get(0));
                 StudentDTO studentDTO = studentResource.readById(id);
                 printStudent(studentDTO);
+            }
+            if(args.getOptionValues("action").contains("readPage")){
+                int size = Integer.parseInt(args.getOptionValues("size").get(0));
+                int page = Integer.parseInt(args.getOptionValues("page").get(0));
+                List<StudentDTO> studentDTOList = studentResource.readPage(page, size);
+                studentDTOList.forEach(this::printStudent);
+            }
+            if(args.getOptionValues("action").contains("findBySubjectId")){
+                int subjectId = Integer.parseInt(args.getOptionValues("subjectId").get(0));
+                List<StudentDTO> studentDTOList = studentResource.findBySubjectId(subjectId);
+                studentDTOList.forEach(this::printStudent);
             }
             if(args.getOptionValues("action").contains("create")) {
                 String username = args.getOptionValues("username").get(0);
@@ -86,7 +99,7 @@ public class ClientApplication implements ApplicationRunner {
     }
 
     private void printStudent(StudentDTO studentDTO) {
-        System.out.println("student id: " + studentDTO.getStudentId()
+        System.out.println("\nstudent id: " + studentDTO.getStudentId()
                 + "\nusername: " + studentDTO.getStudentUsername()
                 + "\npassword: " + studentDTO.getPassword()
                 + "\ngrade: " + studentDTO.getGrade());

@@ -5,11 +5,10 @@ import cz.cvut.fit.tjv.chukavol.client.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class StudentResource {
         restTemplate = builder.rootUri(apiUrl + "/student").build();
     }
 
-    private static final String page_uri = "?page={page}&size={size}";
+    private static final String page_uri = "/all/?page={page}&size={size}";
     private static final String one_uri  = "/{id}";
 
 
@@ -33,25 +32,18 @@ public class StudentResource {
         return restTemplate.getForObject(one_uri, StudentDTO.class,id);
     }
 
-    public PagedModel<StudentDTO> readPage(int page, int size){
-        ResponseEntity<PagedModel<StudentDTO>> result = restTemplate.exchange(page_uri,
+    public List<StudentDTO> readPage(int page, int size){
+        return  restTemplate.exchange(page_uri,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<PagedModel<StudentDTO>>() {},
-                page,
-                size);
-        return result.getBody();
+                new ParameterizedTypeReference<ArrayList<StudentDTO>>(){}, page, size).getBody();
     }
-
-//    public List<StudentDTO> findByIds(List<Integer> ids){
-//
-//    }
 
     public List<StudentDTO> findBySubjectId(int subjectId){
         return restTemplate.exchange("/all/{subjectId}",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<ArrayList<StudentDTO>>(){}).getBody();
+                new ParameterizedTypeReference<ArrayList<StudentDTO>>(){}, subjectId).getBody();
     }
 
     public URI create(StudentCreateDTO studentCreateDTO){
@@ -60,7 +52,8 @@ public class StudentResource {
 
 
     public void update(int id ,StudentCreateDTO studentCreateDTO){
-        restTemplate.put(one_uri,studentCreateDTO,id);
+        restTemplate.put(one_uri,studentCreateDTO,
+                id);
     }
 
     public void delete(int id){
