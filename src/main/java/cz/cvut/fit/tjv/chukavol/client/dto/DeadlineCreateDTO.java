@@ -1,4 +1,4 @@
-package cz.cvut.fit.tjv.chukavol.dto;
+package cz.cvut.fit.tjv.chukavol.client.dto;
 
 import java.util.List;
 

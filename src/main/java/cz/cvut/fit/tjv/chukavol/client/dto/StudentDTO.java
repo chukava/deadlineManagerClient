@@ -1,10 +1,5 @@
-package cz.cvut.fit.tjv.chukavol.dto;
+package cz.cvut.fit.tjv.chukavol.client.dto;
 
-
-import cz.cvut.fit.tjv.chukavol.entity.Deadline;
-
-
-import java.util.List;
 
 public class StudentDTO {
 
